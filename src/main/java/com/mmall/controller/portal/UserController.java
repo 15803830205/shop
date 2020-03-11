@@ -10,6 +10,10 @@ import com.mmall.pojo.User;
 import com.mmall.service.IUserService;
 import com.mmall.util.CookieUtil;
 import com.mmall.util.RedisShardedPoolUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +30,7 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 @RequestMapping("/user/")
+@Api(tags = "登陆分类")
 public class UserController {
 
 
@@ -42,6 +47,11 @@ public class UserController {
      */
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value = "登陆",notes = "登陆信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "用户名",value = "username",required = true,dataType = "String"),
+            @ApiImplicitParam(name = "密码",value = "password",required = true,dataType = "String")
+    })
     public ServerResponse<User> login(String username, String password, HttpSession session, HttpServletResponse httpServletResponse){
         ServerResponse<User> response = iUserService.login(username,password);
         if(response.isSuccess()){
@@ -56,6 +66,7 @@ public class UserController {
 
     @RequestMapping(value = "logout.do",method = RequestMethod.POST)
     @ResponseBody
+    @ApiOperation(value = "退出登陆",notes = "退出登陆信息")
     public ServerResponse<String> logout(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse){
         //获取cookie
         String logoutToken = CookieUtil.readLoginToken(httpServletRequest);
